@@ -1,16 +1,28 @@
-# React + Vite
+# StudyNook Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+StudyNook is a full‑stack web application where students and library users can list study rooms they control, and any registered user can browse, search, filter, and book those rooms.
 
-Currently, two official plugins are available:
+## Live Site
+[StudyNook Live Demo](#) <!-- Replace with your vercel link -->
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Key Features
+- **Premium UI/UX**: Built with React, Tailwind CSS, and Framer Motion for a stunning visual experience.
+- **Secure Authentication**: Email/Password and Google OAuth with JWT stored in HTTP-only cookies.
+- **Room Management**: Users can create, update, and delete their own study rooms.
+- **Advanced Booking System**: Real-time conflict detection prevents double booking.
+- **Responsive Design**: Fully responsive across mobile, tablet, and desktop devices.
 
-## React Compiler
+## Setup Instructions
+1. Clone the repository
+2. Run `npm install`
+3. Create a `.env.local` file based on `.env.example`
+4. Run `npm run dev`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Technologies Used
+- React (Vite)
+- React Router DOM
+- Tailwind CSS
+- Axios
+- Firebase Auth
+- Framer Motion
+- React Hot Toast
