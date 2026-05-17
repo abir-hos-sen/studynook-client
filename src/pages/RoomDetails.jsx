@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../context/AuthContext';
-import { FiUsers, FiMapPin, FiActivity, FiSparkles, FiCalendar, FiClock, FiDollarSign } from 'react-icons/fi';
+import { FiUsers, FiMapPin, FiActivity, FiStar, FiCalendar, FiClock, FiDollarSign } from 'react-icons/fi';
 
 const RoomDetails = () => {
     const { id } = useParams();
@@ -161,7 +161,7 @@ const RoomDetails = () => {
                                     <div className="flex flex-wrap gap-2">
                                         {room.amenities.map((amenity, index) => (
                                             <span key={index} className="px-3.5 py-1.5 bg-primary-500/5 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 border border-primary-500/10 rounded-xl text-xs font-bold flex items-center gap-1.5">
-                                                <FiSparkles size={12} /> {amenity}
+                                                <FiStar size={12} className="text-amber-500 fill-amber-500 animate-pulse" /> {amenity}
                                             </span>
                                         ))}
                                     </div>

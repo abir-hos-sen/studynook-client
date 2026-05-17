@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { FiSearch, FiSliders, FiUsers, FiMapPin, FiSparkles } from 'react-icons/fi';
+import { FiSearch, FiSliders, FiUsers, FiMapPin } from 'react-icons/fi';
 
 const Rooms = () => {
     const [rooms, setRooms] = useState([]);
