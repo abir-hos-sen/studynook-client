@@ -68,7 +68,7 @@ const Home = () => {
                     >
                         <div className="relative mx-auto w-full max-w-[400px] h-[450px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/30 dark:border-slate-800/40 transform lg:rotate-3 hover:rotate-0 transition-transform duration-500">
                             <img 
-                                src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" 
                                 alt="Cozy Study Room" 
                                 className="w-full h-full object-cover"
                             />
