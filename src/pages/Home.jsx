@@ -68,19 +68,19 @@ const Home = () => {
                     >
                         <div className="relative mx-auto w-full max-w-[400px] h-[450px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/30 dark:border-slate-800/40 transform lg:rotate-3 hover:rotate-0 transition-transform duration-500">
                             <img 
-                                src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" 
-                                alt="Cozy Study Room" 
+                                src="/hero-bookshelf.jpg" 
+                                alt="Cozy Reading Corner" 
                                 className="w-full h-full object-cover"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
                             
                             {/* Floating Info tag */}
                             <div className="absolute bottom-6 left-6 right-6 glass-card p-5 border border-white/20 dark:border-slate-800/60 backdrop-blur-md">
-                                <p className="text-xs font-bold text-primary-400 uppercase tracking-widest mb-1">Featured Room</p>
-                                <h3 className="text-lg font-bold text-white mb-2">The Glass Pavilion</h3>
+                                <p className="text-xs font-bold text-primary-400 uppercase tracking-widest mb-1">Cozy Nook</p>
+                                <h3 className="text-lg font-bold text-white mb-2">The Reading Lounge</h3>
                                 <div className="flex justify-between items-center text-xs text-slate-300">
-                                    <span className="flex items-center gap-1"><FiMapPin /> 3rd Floor</span>
-                                    <span className="font-bold text-accent-500">$8/hr</span>
+                                    <span className="flex items-center gap-1"><FiMapPin /> 2nd Floor</span>
+                                    <span className="font-bold text-accent-500">$6/hr</span>
                                 </div>
                             </div>
                         </div>
