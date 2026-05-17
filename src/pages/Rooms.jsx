@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { FiSearch, FiSliders, FiUsers, FiMapPin, FiSparkles } from 'react-icons/fi';
 
 const Rooms = () => {
     const [rooms, setRooms] = useState([]);
@@ -52,133 +53,167 @@ const Rooms = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-                <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Available Study Rooms</h1>
-                <p className="text-lg text-gray-600 dark:text-gray-400">Find and book the perfect room for your next study session.</p>
-            </div>
+        <div className="relative min-h-screen pt-24 pb-16 overflow-hidden">
+            {/* Ambient Background Glow */}
+            <div className="bg-mesh-glow"></div>
 
-            <div className="flex flex-col md:flex-row gap-8 mb-12">
-                {/* Filters Sidebar */}
-                <div className="w-full md:w-1/4 glass p-6 rounded-xl border border-gray-200 dark:border-gray-700 h-fit sticky top-24">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Filters</h2>
-                    
-                    <form onSubmit={handleSearch}>
-                        <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search by Name</label>
-                            <input 
-                                type="text" 
-                                className="input-field" 
-                                placeholder="Search rooms..." 
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Hourly Rate ($)</label>
-                            <div className="flex items-center space-x-2">
-                                <input 
-                                    type="number" 
-                                    className="input-field w-full" 
-                                    placeholder="Min" 
-                                    value={minRate}
-                                    onChange={(e) => setMinRate(e.target.value)}
-                                />
-                                <span>-</span>
-                                <input 
-                                    type="number" 
-                                    className="input-field w-full" 
-                                    placeholder="Max" 
-                                    value={maxRate}
-                                    onChange={(e) => setMaxRate(e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Amenities</label>
-                            <div className="space-y-2 max-h-48 overflow-y-auto">
-                                {amenitiesList.map(amenity => (
-                                    <div key={amenity} className="flex items-center">
-                                        <input 
-                                            id={`amenity-${amenity}`} 
-                                            type="checkbox" 
-                                            className="h-4 w-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
-                                            checked={selectedAmenities.includes(amenity)}
-                                            onChange={() => handleAmenityChange(amenity)}
-                                        />
-                                        <label htmlFor={`amenity-${amenity}`} className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                                            {amenity}
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <button type="submit" className="w-full btn-primary py-2">Apply Filters</button>
-                    </form>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div className="text-center mb-16 space-y-4">
+                    <div className="badge-premium inline-block">Study Suite Catalog</div>
+                    <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">Available Study Rooms</h1>
+                    <p className="max-w-2xl mx-auto text-slate-500 dark:text-slate-400 font-medium">Find and book the perfect room for your next study session.</p>
                 </div>
 
-                {/* Rooms Grid */}
-                <div className="w-full md:w-3/4">
-                    {loading ? (
-                        <div className="flex justify-center items-center h-64">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-                        </div>
-                    ) : rooms.length === 0 ? (
-                        <div className="text-center py-20 glass rounded-xl border border-gray-200 dark:border-gray-700">
-                            <div className="text-5xl mb-4">🔍</div>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No rooms found</h3>
-                            <p className="text-gray-500 dark:text-gray-400">Try adjusting your filters or search criteria.</p>
-                            <button 
-                                onClick={() => {
-                                    setSearch(''); setMinRate(''); setMaxRate(''); setSelectedAmenities([]);
-                                    setTimeout(fetchRooms, 100);
-                                }}
-                                className="mt-6 btn-outline"
-                            >
-                                Clear Filters
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {rooms.map((room) => (
-                                <motion.div 
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    key={room._id} 
-                                    className="card group flex flex-col"
-                                >
-                                    <div className="relative h-48 w-full overflow-hidden">
-                                        <img 
-                                            src={room.image} 
-                                            alt={room.name} 
-                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                <div className="flex flex-col lg:flex-row gap-8">
+                    {/* Filters Sidebar */}
+                    <div className="w-full lg:w-1/4">
+                        <div className="glass-card p-6 border border-white/20 dark:border-slate-800/40 h-fit sticky top-28 space-y-6">
+                            <div className="flex items-center gap-2 pb-4 border-b border-slate-100 dark:border-slate-800/80">
+                                <FiSliders className="text-primary-500" size={18} />
+                                <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">Filters</h2>
+                            </div>
+
+                            <form onSubmit={handleSearch} className="space-y-6">
+                                {/* Search by Name */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Search by Name</label>
+                                    <div className="relative">
+                                        <input 
+                                            type="text" 
+                                            className="input-premium pl-10" 
+                                            placeholder="Search rooms..." 
+                                            value={search}
+                                            onChange={(e) => setSearch(e.target.value)}
                                         />
-                                        <div className="absolute top-4 right-4 bg-white dark:bg-dark-card px-3 py-1 rounded-full text-sm font-bold text-primary-600 shadow-md">
-                                            ${room.hourlyRate}/hr
-                                        </div>
+                                        <FiSearch className="absolute left-3.5 top-3.5 text-slate-400" size={18} />
                                     </div>
-                                    <div className="p-6 flex flex-col flex-grow">
-                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{room.name}</h3>
-                                        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
-                                            {room.description}
-                                        </p>
-                                        <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
-                                            <span className="flex items-center"><span className="mr-2">📍</span> Floor: {room.floor}</span>
-                                            <span className="flex items-center"><span className="mr-2">👥</span> {room.capacity}</span>
-                                        </div>
-                                        <div className="mt-auto">
-                                            <Link to={`/rooms/${room._id}`} className="btn-primary w-full text-center block">
-                                                View Details
-                                            </Link>
-                                        </div>
+                                </div>
+
+                                {/* Hourly Rate Range */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Hourly Rate ($)</label>
+                                    <div className="flex items-center gap-2">
+                                        <input 
+                                            type="number" 
+                                            className="input-premium py-2.5 text-center text-sm" 
+                                            placeholder="Min" 
+                                            value={minRate}
+                                            onChange={(e) => setMinRate(e.target.value)}
+                                        />
+                                        <span className="text-slate-400 font-medium">to</span>
+                                        <input 
+                                            type="number" 
+                                            className="input-premium py-2.5 text-center text-sm" 
+                                            placeholder="Max" 
+                                            value={maxRate}
+                                            onChange={(e) => setMaxRate(e.target.value)}
+                                        />
                                     </div>
-                                </motion.div>
-                            ))}
+                                </div>
+
+                                {/* Amenities list */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Amenities</label>
+                                    <div className="space-y-2.5 max-h-48 overflow-y-auto pr-1">
+                                        {amenitiesList.map(amenity => (
+                                            <div key={amenity} className="flex items-center">
+                                                <input 
+                                                    id={`amenity-${amenity}`} 
+                                                    type="checkbox" 
+                                                    className="h-4.5 w-4.5 text-primary-600 border-slate-300 dark:border-slate-800 rounded focus:ring-primary-500 bg-white/20 dark:bg-slate-900/30"
+                                                    checked={selectedAmenities.includes(amenity)}
+                                                    onChange={() => handleAmenityChange(amenity)}
+                                                />
+                                                <label htmlFor={`amenity-${amenity}`} className="ml-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 select-none">
+                                                    {amenity}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <button type="submit" className="w-full btn-premium-primary py-2.5">
+                                    Apply Filters
+                                </button>
+                            </form>
                         </div>
-                    )}
+                    </div>
+
+                    {/* Rooms Grid */}
+                    <div className="w-full lg:w-3/4">
+                        {loading ? (
+                            <div className="flex justify-center items-center h-64">
+                                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-500"></div>
+                            </div>
+                        ) : rooms.length === 0 ? (
+                            <div className="text-center py-20 glass-card border border-white/20 dark:border-slate-800/40">
+                                <div className="text-5xl mb-4">🔍</div>
+                                <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">No rooms found</h3>
+                                <p className="text-slate-400 font-medium mb-6">Try adjusting your filters or search criteria.</p>
+                                <button 
+                                    onClick={() => {
+                                        setSearch(''); setMinRate(''); setMaxRate(''); setSelectedAmenities([]);
+                                        setTimeout(fetchRooms, 100);
+                                    }}
+                                    className="btn-premium-secondary mx-auto"
+                                >
+                                    Clear Filters
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {rooms.map((room) => (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        key={room._id} 
+                                        className="glass-card-hover flex flex-col group overflow-hidden"
+                                    >
+                                        <div className="relative h-52 w-full overflow-hidden">
+                                            <img 
+                                                src={room.image} 
+                                                alt={room.name} 
+                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                            />
+                                            <div className="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-sm font-bold text-accent-500 border border-white/10 shadow-lg">
+                                                ${room.hourlyRate}/hr
+                                            </div>
+                                        </div>
+                                        <div className="p-6 flex flex-col flex-grow">
+                                            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors duration-200 mb-2">{room.name}</h3>
+                                            <p className="text-slate-500 dark:text-slate-400 text-sm mb-5 line-clamp-2">
+                                                {room.description}
+                                            </p>
+                                            
+                                            <div className="flex justify-between items-center text-xs text-slate-400 mb-5 border-t border-slate-100 dark:border-slate-800/80 pt-4">
+                                                <span className="flex items-center gap-1"><FiMapPin className="text-primary-500" /> Floor: {room.floor}</span>
+                                                <span className="flex items-center gap-1"><FiUsers className="text-primary-500" /> Max {room.capacity}</span>
+                                            </div>
+
+                                            <div className="flex flex-wrap gap-1.5 mb-6">
+                                                {room.amenities.slice(0, 3).map((amenity, i) => (
+                                                    <span key={i} className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800/80 text-[10px] font-bold rounded-lg text-slate-600 dark:text-slate-300 border border-slate-200/40 dark:border-slate-700/40">
+                                                        {amenity}
+                                                    </span>
+                                                ))}
+                                                {room.amenities.length > 3 && (
+                                                    <span className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800/80 text-[10px] font-bold rounded-lg text-slate-600 dark:text-slate-300 border border-slate-200/40 dark:border-slate-700/40">
+                                                        +{room.amenities.length - 3} More
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <div className="mt-auto pt-2">
+                                                <Link to={`/rooms/${room._id}`} className="btn-premium-primary py-2.5 text-sm w-full">
+                                                    View Nook Details
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

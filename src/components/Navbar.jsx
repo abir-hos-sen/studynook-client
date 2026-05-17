@@ -1,12 +1,13 @@
 import { useContext, useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FiMenu, FiX, FiMoon, FiSun } from 'react-icons/fi';
+import { FiMenu, FiX, FiMoon, FiSun, FiLogOut } from 'react-icons/fi';
 
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
     const [isOpen, setIsOpen] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,6 +16,17 @@ const Navbar = () => {
             setIsDarkMode(true);
             document.documentElement.classList.add('dark');
         }
+        
+        const handleScroll = () => {
+            if (window.scrollY > 20) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const toggleTheme = () => {
@@ -47,26 +59,32 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="glass sticky top-0 z-50">
+        <nav className={`fixed w-full top-0 left-0 z-50 transition-all duration-300 ${
+            scrolled 
+                ? 'py-3 bg-white/70 dark:bg-dark-bg/75 backdrop-blur-md shadow-lg border-b border-white/20 dark:border-slate-800/60' 
+                : 'py-5 bg-transparent'
+        }`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16 items-center">
+                <div className="flex justify-between h-12 items-center">
                     <div className="flex-shrink-0 flex items-center">
-                        <Link to="/" className="text-2xl font-bold text-primary-600 dark:text-primary-500">
+                        <Link to="/" className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent hover:scale-105 transition-transform duration-200">
                             StudyNook
                         </Link>
                     </div>
 
                     {/* Desktop Menu */}
                     <div className="hidden md:flex items-center space-x-8">
-                        <div className="flex space-x-6">
+                        <div className="flex space-x-1 bg-slate-100/50 dark:bg-slate-900/40 p-1.5 rounded-full border border-slate-200/40 dark:border-slate-800/40 backdrop-blur-md">
                             {navLinks.map((link) => (
                                 <NavLink
                                     key={link.path}
                                     to={link.path}
                                     className={({ isActive }) =>
-                                        isActive
-                                            ? "text-primary-600 font-semibold"
-                                            : "text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 transition-colors"
+                                        `px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 ${
+                                            isActive
+                                                ? "bg-white dark:bg-slate-800 text-primary-600 dark:text-primary-400 shadow-sm"
+                                                : "text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400"
+                                        }`
                                     }
                                 >
                                     {link.name}
@@ -74,41 +92,59 @@ const Navbar = () => {
                             ))}
                         </div>
 
-                        <div className="flex items-center space-x-4 border-l pl-4 border-gray-200 dark:border-gray-700">
-                            <button onClick={toggleTheme} className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none">
-                                {isDarkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
+                        <div className="flex items-center space-x-4">
+                            {/* Theme Toggle */}
+                            <button 
+                                onClick={toggleTheme} 
+                                className="p-2.5 rounded-xl border border-slate-200/50 dark:border-slate-800/60 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 bg-white/40 dark:bg-slate-900/30 hover:bg-white dark:hover:bg-slate-800 hover:scale-105 transition-all duration-200"
+                            >
+                                {isDarkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
                             </button>
 
                             {user ? (
                                 <div className="relative group cursor-pointer">
-                                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-500">
+                                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-500/50 hover:border-primary-500 transition-all duration-200">
                                         <img src={user.photoURL || 'https://via.placeholder.com/150'} alt="Profile" className="w-full h-full object-cover" />
                                     </div>
-                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-card rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right border border-gray-100 dark:border-gray-700">
-                                        <div className="px-4 py-2 border-b dark:border-gray-700">
-                                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user.name}</p>
+                                    <div className="absolute right-0 mt-3 w-52 bg-white dark:bg-slate-900 rounded-2xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right border border-slate-100 dark:border-slate-800/80">
+                                        <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800/80">
+                                            <p className="text-xs font-semibold text-slate-400">LOGGED IN AS</p>
+                                            <p className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">{user.name}</p>
                                         </div>
-                                        <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                                            Logout
+                                        <button 
+                                            onClick={handleLogout} 
+                                            className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors flex items-center gap-2 font-medium"
+                                        >
+                                            <FiLogOut size={16} /> Logout
                                         </button>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="space-x-4">
-                                    <Link to="/login" className="text-gray-600 hover:text-primary-600 dark:text-gray-300 transition-colors font-medium">Login</Link>
-                                    <Link to="/register" className="btn-primary">Register</Link>
+                                <div className="flex items-center space-x-3">
+                                    <Link to="/login" className="px-4 py-2 text-slate-600 dark:text-slate-300 hover:text-primary-600 font-semibold transition-colors">
+                                        Login
+                                    </Link>
+                                    <Link to="/register" className="px-4 py-2 text-sm font-bold text-white bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 shadow-md rounded-xl hover:scale-105 active:scale-95 transition-all">
+                                        Register
+                                    </Link>
                                 </div>
                             )}
                         </div>
                     </div>
 
                     {/* Mobile menu button */}
-                    <div className="flex items-center md:hidden space-x-4">
-                        <button onClick={toggleTheme} className="p-2 text-gray-500">
-                            {isDarkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
+                    <div className="flex items-center md:hidden space-x-3">
+                        <button 
+                            onClick={toggleTheme} 
+                            className="p-2.5 rounded-xl border border-slate-200/50 dark:border-slate-800/60 text-slate-500 bg-white/40 dark:bg-slate-900/30"
+                        >
+                            {isDarkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
                         </button>
-                        <button onClick={() => setIsOpen(!isOpen)} className="text-gray-500 focus:outline-none">
-                            {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+                        <button 
+                            onClick={() => setIsOpen(!isOpen)} 
+                            className="p-2.5 rounded-xl border border-slate-200/50 dark:border-slate-800/60 text-slate-500 bg-white/40 dark:bg-slate-900/30"
+                        >
+                            {isOpen ? <FiX size={20} /> : <FiMenu size={20} />}
                         </button>
                     </div>
                 </div>
@@ -116,41 +152,59 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             {isOpen && (
-                <div className="md:hidden glass border-t border-gray-200 dark:border-gray-700">
-                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <div className="md:hidden glass-card rounded-b-3xl border-t border-slate-200/40 dark:border-slate-800/40 mt-3 mx-4 p-4 shadow-2xl">
+                    <div className="space-y-1">
                         {navLinks.map((link) => (
                             <NavLink
                                 key={link.path}
                                 to={link.path}
                                 onClick={() => setIsOpen(false)}
                                 className={({ isActive }) =>
-                                    `block px-3 py-2 rounded-md text-base font-medium ${
-                                        isActive ? "bg-primary-50 text-primary-600 dark:bg-gray-800 dark:text-primary-400" : "text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
+                                    `block px-4 py-2.5 rounded-xl text-base font-semibold transition-all ${
+                                        isActive 
+                                            ? "bg-primary-500/10 text-primary-600 dark:text-primary-400" 
+                                            : "text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50"
                                     }`
                                 }
                             >
                                 {link.name}
                             </NavLink>
                         ))}
+                        
                         {!user ? (
-                            <div className="mt-4 flex flex-col space-y-2 px-3">
-                                <Link to="/login" onClick={() => setIsOpen(false)} className="w-full text-center py-2 text-primary-600 border border-primary-600 rounded-md font-medium">Login</Link>
-                                <Link to="/register" onClick={() => setIsOpen(false)} className="w-full text-center py-2 bg-primary-600 text-white rounded-md font-medium">Register</Link>
+                            <div className="mt-4 flex flex-col space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+                                <Link 
+                                    to="/login" 
+                                    onClick={() => setIsOpen(false)} 
+                                    className="w-full text-center py-2.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl font-bold transition-all"
+                                >
+                                    Login
+                                </Link>
+                                <Link 
+                                    to="/register" 
+                                    onClick={() => setIsOpen(false)} 
+                                    className="w-full text-center py-2.5 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-xl font-bold transition-all"
+                                >
+                                    Register
+                                </Link>
                             </div>
                         ) : (
-                            <div className="mt-4 px-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80">
                                 <div className="flex items-center px-2">
                                     <div className="flex-shrink-0">
                                         <img className="h-10 w-10 rounded-full object-cover" src={user.photoURL} alt="" />
                                     </div>
                                     <div className="ml-3">
-                                        <div className="text-base font-medium text-gray-800 dark:text-white">{user.name}</div>
-                                        <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{user.email}</div>
+                                        <div className="text-base font-bold text-slate-800 dark:text-white">{user.name}</div>
+                                        <div className="text-sm font-semibold text-slate-500">{user.email}</div>
                                     </div>
                                 </div>
-                                <div className="mt-3 px-2">
-                                    <button onClick={() => { handleLogout(); setIsOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        Logout
+                                <div className="mt-3">
+                                    <button 
+                                        onClick={() => { handleLogout(); setIsOpen(false); }} 
+                                        className="w-full text-center py-2.5 text-red-500 bg-red-50 dark:bg-red-950/20 hover:bg-red-100 dark:hover:bg-red-950/40 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <FiLogOut size={16} /> Logout
                                     </button>
                                 </div>
                             </div>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,30 +6,60 @@
 
 @layer base {
   body {
-    @apply font-sans bg-gray-50 text-gray-900 transition-colors duration-300;
-  }
-  
-  .dark body {
-    @apply bg-dark-bg text-dark-text;
+    @apply font-sans bg-slate-50 text-slate-900 dark:bg-dark-bg dark:text-white transition-colors duration-300 antialiased;
   }
 }
 
 @layer components {
-  .btn-primary {
-    @apply px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 font-medium;
+  /* Floating premium glassmorphic cards */
+  .glass-card {
+    @apply bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-slate-800/50 shadow-glass rounded-2xl transition-all duration-300;
   }
-  .btn-outline {
-    @apply px-4 py-2 border border-primary-600 text-primary-600 rounded-lg hover:bg-primary-50 dark:hover:bg-gray-800 transition-colors duration-200 font-medium;
+
+  .glass-card-hover {
+    @apply glass-card hover:translate-y-[-4px] hover:shadow-2xl hover:border-primary-500/30 dark:hover:border-primary-500/20 hover:shadow-primary-500/5;
   }
-  .input-field {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none dark:bg-dark-card dark:border-gray-600 dark:text-white transition-colors;
+
+  /* Interactive floating inputs */
+  .input-premium {
+    @apply w-full px-4 py-3 bg-white/50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-slate-800 dark:text-slate-100 placeholder-slate-400 backdrop-blur-md;
   }
-  .card {
-    @apply bg-white dark:bg-dark-card rounded-xl shadow-md border border-gray-100 dark:border-gray-800 overflow-hidden;
+
+  /* Stunning primary button with soft glow */
+  .btn-premium-primary {
+    @apply relative overflow-hidden px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-glow-primary hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2;
+  }
+
+  /* Secondary outline button */
+  .btn-premium-secondary {
+    @apply px-6 py-3 border border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/30 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 rounded-xl font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-md;
+  }
+
+  /* Premium Badge */
+  .badge-premium {
+    @apply px-3 py-1 bg-primary-50 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400 border border-primary-100 dark:border-primary-900/50 rounded-full text-xs font-semibold tracking-wide uppercase;
   }
 }
 
-/* Glassmorphism utilities */
-.glass {
-  @apply bg-white/70 dark:bg-dark-card/70 backdrop-blur-md border border-white/20 dark:border-gray-700/50;
+/* Beautiful Animated Gradients */
+.bg-mesh-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 500px;
+  background: radial-gradient(circle at 50% -10%, rgba(124, 58, 237, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Custom Scrollbar for premium vibe */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-slate-100 dark:bg-dark-bg;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 dark:bg-slate-800 rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 transition-colors;
 }
