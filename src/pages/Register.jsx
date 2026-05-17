@@ -63,25 +63,33 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-dark-bg transition-colors">
-            <div className="max-w-md w-full glass p-8 rounded-2xl shadow-xl">
-                <div>
-                    <h2 className="mt-2 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-dark-bg relative overflow-hidden transition-colors duration-300">
+            {/* Ambient Background Glow */}
+            <div className="bg-mesh-glow"></div>
+            
+            <div className="max-w-md w-full glass-card p-8 md:p-10 shadow-2xl relative overflow-hidden border border-white/50 dark:border-slate-800/80">
+                {/* Embedded Card Glows */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 dark:bg-primary-500/5 rounded-full blur-2xl pointer-events-none"></div>
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent-500/10 dark:bg-accent-500/5 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div className="relative">
+                    <h2 className="mt-2 text-center text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">
                         Create an Account
                     </h2>
-                    <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+                    <p className="mt-2 text-center text-sm text-slate-500 dark:text-slate-400 font-medium">
                         Join StudyNook to book your first room
                     </p>
                 </div>
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+
+                <form className="mt-8 space-y-6 relative" onSubmit={handleSubmit}>
                     {error && (
-                        <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-400 p-4 rounded-md">
-                            <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+                        <div className="bg-rose-50 dark:bg-rose-950/20 border-l-4 border-rose-500 p-4 rounded-xl">
+                            <p className="text-sm text-rose-700 dark:text-rose-400 font-semibold">{error}</p>
                         </div>
                     )}
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="name">
+                            <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-2" htmlFor="name">
                                 Full Name
                             </label>
                             <input
@@ -89,14 +97,14 @@ const Register = () => {
                                 name="name"
                                 type="text"
                                 required
-                                className="input-field"
+                                className="input-premium"
                                 placeholder="John Doe"
                                 value={formData.name}
                                 onChange={handleChange}
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="email">
+                            <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-2" htmlFor="email">
                                 Email Address
                             </label>
                             <input
@@ -104,14 +112,14 @@ const Register = () => {
                                 name="email"
                                 type="email"
                                 required
-                                className="input-field"
+                                className="input-premium"
                                 placeholder="you@example.com"
                                 value={formData.email}
                                 onChange={handleChange}
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="photoURL">
+                            <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-2" htmlFor="photoURL">
                                 Photo URL
                             </label>
                             <input
@@ -119,14 +127,14 @@ const Register = () => {
                                 name="photoURL"
                                 type="url"
                                 required
-                                className="input-field"
+                                className="input-premium"
                                 placeholder="https://example.com/photo.jpg"
                                 value={formData.photoURL}
                                 onChange={handleChange}
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="password">
+                            <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-2" htmlFor="password">
                                 Password
                             </label>
                             <input
@@ -134,7 +142,7 @@ const Register = () => {
                                 name="password"
                                 type="password"
                                 required
-                                className="input-field"
+                                className="input-premium"
                                 placeholder="••••••••"
                                 value={formData.password}
                                 onChange={handleChange}
@@ -143,36 +151,34 @@ const Register = () => {
                     </div>
 
                     <div>
-                        <button type="submit" className="w-full btn-primary py-3 flex justify-center items-center">
+                        <button type="submit" className="w-full btn-premium-primary py-3.5 text-base font-bold">
                             Register
                         </button>
                     </div>
                 </form>
 
-                <div className="mt-6">
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white dark:bg-dark-card text-gray-500 dark:text-gray-400">Or continue with</span>
-                        </div>
+                <div className="mt-8 relative">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-slate-200 dark:border-slate-800/80"></div>
                     </div>
-
-                    <div className="mt-6">
-                        <button
-                            onClick={handleGoogleLogin}
-                            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-dark-card text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                        >
-                            <FcGoogle className="h-5 w-5 mr-2" />
-                            Google
-                        </button>
+                    <div className="relative flex justify-center text-xs uppercase tracking-widest font-bold">
+                        <span className="px-3 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl text-slate-400 dark:text-slate-500">Or continue with</span>
                     </div>
                 </div>
 
-                <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+                <div className="mt-6 relative">
+                    <button
+                        onClick={handleGoogleLogin}
+                        className="w-full btn-premium-secondary py-3.5 text-sm font-bold"
+                    >
+                        <FcGoogle className="h-5 w-5 mr-1" />
+                        Google Sign In
+                    </button>
+                </div>
+
+                <p className="mt-8 text-center text-sm text-slate-500 dark:text-slate-400 font-medium">
                     Already have an account?{' '}
-                    <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
+                    <Link to="/login" className="font-bold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors">
                         Login
                     </Link>
                 </p>
