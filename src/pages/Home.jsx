@@ -1,12 +1,23 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { FiArrowRight, FiActivity, FiShield, FiDollarSign, FiMapPin, FiUsers, FiSearch, FiCalendar, FiCheckCircle } from 'react-icons/fi';
+import { AuthContext } from '../context/AuthContext';
 
 const Home = () => {
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const handleViewDetails = (roomId) => {
+        if (!user) {
+            navigate('/login', { state: { from: { pathname: `/rooms/${roomId}` } } });
+        } else {
+            navigate(`/rooms/${roomId}`);
+        }
+    };
 
     useEffect(() => {
         document.title = "StudyNook - Home";
@@ -139,9 +150,9 @@ const Home = () => {
                                     </div>
                                     
                                     <div className="mt-auto pt-2">
-                                        <Link to={`/rooms/${room._id}`} className="btn-premium-primary py-2.5 text-sm w-full">
+                                        <button onClick={() => handleViewDetails(room._id)} className="btn-premium-primary py-2.5 text-sm w-full">
                                             View Nook Details
-                                        </Link>
+                                        </button>
                                     </div>
                                 </div>
                             </motion.div>
