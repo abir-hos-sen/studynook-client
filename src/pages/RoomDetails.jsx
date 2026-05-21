@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../context/AuthContext';
@@ -8,7 +8,8 @@ import { FiUsers, FiMapPin, FiActivity, FiStar, FiCalendar, FiClock, FiDollarSig
 const RoomDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { user } = useContext(AuthContext);
+    const location = useLocation();
+    const { user, loading: authLoading } = useContext(AuthContext);
     const [room, setRoom] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -20,7 +21,15 @@ const RoomDetails = () => {
     const [specialNote, setSpecialNote] = useState('');
     const [bookingLoading, setBookingLoading] = useState(false);
 
+    // ✅ Direct auth guard - redirect to login if not logged in
     useEffect(() => {
+        if (!authLoading && !user) {
+            navigate('/login', { state: { from: location }, replace: true });
+        }
+    }, [authLoading, user, navigate, location]);
+
+    useEffect(() => {
+        if (!user) return; // Don't fetch if not logged in
         const fetchRoomDetails = async () => {
             try {
                 const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/rooms/${id}`);
@@ -34,7 +43,8 @@ const RoomDetails = () => {
             }
         };
         fetchRoomDetails();
-    }, [id, navigate]);
+    }, [id, navigate, user]);
+
 
     const handleBookNowClick = () => {
         if (!user) {
