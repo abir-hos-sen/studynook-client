@@ -29,13 +29,26 @@ export const AuthProvider = ({ children }) => {
 
     // Fetch user from our backend to verify JWT cookie
     const fetchUser = async () => {
+        // If no API URL configured, skip fetch and set user to null
+        if (!import.meta.env.VITE_API_URL) {
+            setUser(null);
+            setLoading(false);
+            return;
+        }
         const token = localStorage.getItem('token');
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         }
         try {
             const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`);
-            setUser(data);
+            // Strictly validate the response - must have _id and email
+            if (data && data._id && data.email) {
+                setUser(data);
+            } else {
+                setUser(null);
+                localStorage.removeItem('token');
+                delete axios.defaults.headers.common['Authorization'];
+            }
         } catch {
             setUser(null);
             localStorage.removeItem('token');
