@@ -10,11 +10,6 @@ const MyListings = () => {
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        document.title = "StudyNook - My Listings";
-        fetchMyRooms();
-    }, []);
-
     const fetchMyRooms = async () => {
         try {
             // Fetch all rooms and filter by user ID since we don't have a specific endpoint for user's rooms
@@ -29,6 +24,13 @@ const MyListings = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        document.title = "StudyNook - My Listings";
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchMyRooms();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this room? This action cannot be undone.")) {

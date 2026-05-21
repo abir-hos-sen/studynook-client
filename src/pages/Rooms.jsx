@@ -14,11 +14,6 @@ const Rooms = () => {
 
     const amenitiesList = ['Whiteboard', 'Projector', 'Wi-Fi', 'Power Outlets', 'Quiet Zone', 'Air Conditioning'];
 
-    useEffect(() => {
-        document.title = "StudyNook - Available Rooms";
-        fetchRooms();
-    }, []);
-
     const fetchRooms = async () => {
         setLoading(true);
         try {
@@ -38,6 +33,13 @@ const Rooms = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        document.title = "StudyNook - Available Rooms";
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchRooms();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleSearch = (e) => {
         e.preventDefault();

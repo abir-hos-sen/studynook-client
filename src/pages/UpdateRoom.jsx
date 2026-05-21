@@ -35,7 +35,7 @@ const UpdateRoom = () => {
                     hourlyRate: data.hourlyRate
                 });
                 setSelectedAmenities(data.amenities || []);
-            } catch (error) {
+            } catch {
                 toast.error('Failed to load room details');
                 navigate('/my-listings');
             } finally {

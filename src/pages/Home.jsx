@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { FiArrowRight, FiActivity, FiShield, FiDollarSign, FiMapPin, FiUsers } from 'react-icons/fi';
+import { FiArrowRight, FiActivity, FiShield, FiDollarSign, FiMapPin, FiUsers, FiSearch, FiCalendar, FiCheckCircle } from 'react-icons/fi';
 
 const Home = () => {
     const [rooms, setRooms] = useState([]);
@@ -79,13 +79,12 @@ const Home = () => {
 
             {/* Dynamic Section - Available Study Rooms */}
             <div className="max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="text-center mb-16 space-y-4">
-                    <div className="badge-premium inline-block">Study Suite Catalog</div>
-                    <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-                        Latest Available Nooks
+                <div className="text-left mb-12 space-y-3">
+                    <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white" style={{ fontFamily: 'var(--font-serif)' }}>
+                        Available Study Rooms
                     </h2>
-                    <p className="max-w-2xl mx-auto text-slate-500 dark:text-slate-400 font-medium">
-                        Reserve one of our premium high-focus study suites. Configured with state-of-the-art academic amenities.
+                    <p className="max-w-2xl text-slate-500 dark:text-slate-400 font-medium">
+                        Hand-picked rooms recently added to StudyNook.
                     </p>
                 </div>
 
@@ -185,21 +184,57 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Extra Section 2: CTA */}
-            <div className="relative py-24 bg-gradient-to-r from-primary-900 to-slate-950 border-t border-slate-900 overflow-hidden text-center z-10">
-                {/* Floating ambient glow in CTA */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(124,58,237,0.15)_0%,transparent_70%)] pointer-events-none"></div>
-
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 space-y-6">
-                    <h2 className="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
-                        Ready to Boost Your Academic Productivity?
-                    </h2>
-                    <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-                        Join thousands of focused students who coordinate work, schedule prep sessions, and excel through StudyNook.
+            {/* How It Works Section */}
+            <div className="relative py-24 overflow-hidden text-center z-10 border-t border-slate-100 dark:border-slate-900/60">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <div className="badge-premium inline-block mb-4">Simple Process</div>
+                    <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 text-slate-900 dark:text-white">How It Works</h2>
+                    <p className="max-w-2xl mx-auto text-slate-500 dark:text-slate-400 font-medium mb-16">
+                        Book a room and study peacefully in 3 simple steps.
                     </p>
-                    <div className="pt-6 flex justify-center">
-                        <Link to="/register" className="btn-premium-primary bg-white text-primary-900 hover:bg-slate-100 text-lg px-8 py-4 shadow-2xl">
-                            Get Started Now <FiArrowRight />
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 relative">
+                        {/* Connecting Line */}
+                        <div className="hidden md:block absolute top-[6rem] left-[15%] right-[15%] h-[1px] bg-slate-200 dark:bg-slate-700/50 z-0"></div>
+                        
+                        {/* Step 1 */}
+                        <div className="glass-card-hover p-8 rounded-2xl border border-white/20 dark:border-slate-800/40 text-center flex flex-col items-center relative z-10 transition-transform duration-300 hover:-translate-y-2">
+                            <div className="text-primary-600 dark:text-primary-400 font-mono text-sm mb-3 font-bold bg-primary-50 dark:bg-primary-500/10 px-3 py-1 rounded-full">Step 01</div>
+                            <div className="w-16 h-16 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-2xl flex items-center justify-center mb-6 text-2xl shadow-lg shadow-primary-500/15">
+                                <FiSearch />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3">Browse Rooms</h3>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                                Filter by time, capacity, and amenities. Find the perfect study nook for you.
+                            </p>
+                        </div>
+                        {/* Step 2 */}
+                        <div className="glass-card-hover p-8 rounded-2xl border border-white/20 dark:border-slate-800/40 text-center flex flex-col items-center relative z-10 transition-transform duration-300 hover:-translate-y-2">
+                            <div className="text-accent-600 dark:text-accent-400 font-mono text-sm mb-3 font-bold bg-accent-50 dark:bg-accent-500/10 px-3 py-1 rounded-full">Step 02</div>
+                            <div className="w-16 h-16 bg-gradient-to-r from-accent-600 to-accent-500 text-white rounded-2xl flex items-center justify-center mb-6 text-2xl shadow-lg shadow-accent-500/15">
+                                <FiCalendar />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3">Book a Time</h3>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                                Choose a convenient timeslot and secure your booking instantly with ease.
+                            </p>
+                        </div>
+                        {/* Step 3 */}
+                        <div className="glass-card-hover p-8 rounded-2xl border border-white/20 dark:border-slate-800/40 text-center flex flex-col items-center relative z-10 transition-transform duration-300 hover:-translate-y-2">
+                            <div className="text-primary-600 dark:text-primary-400 font-mono text-sm mb-3 font-bold bg-primary-50 dark:bg-primary-500/10 px-3 py-1 rounded-full">Step 03</div>
+                            <div className="w-16 h-16 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-2xl flex items-center justify-center mb-6 text-2xl shadow-lg shadow-primary-500/15">
+                                <FiCheckCircle />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3">Study Peacefully</h3>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                                Get a confirmation, show up, check in, and enjoy your quiet study session.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-center">
+                        <Link to="/rooms" className="btn-premium-primary text-lg px-8 py-3.5">
+                            Start Browsing <FiArrowRight />
                         </Link>
                     </div>
                 </div>

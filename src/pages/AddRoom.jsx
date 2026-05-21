@@ -1,11 +1,9 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const AddRoom = () => {
-    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     

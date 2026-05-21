@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { FcGoogle } from 'react-icons/fc';
+import { useGoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -36,15 +37,31 @@ const Login = () => {
         }
     };
 
-    const handleGoogleLogin = async () => {
-        try {
-            await loginWithGoogle();
-            toast.success("Login successful");
-            navigate(from, { replace: true });
-        } catch (err) {
-            toast.error(err.message || 'Google login failed');
+    const handleGoogleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            try {
+                setLoading(true);
+                const res = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+                });
+                const profile = res.data;
+                await loginWithGoogle({
+                    name: profile.name,
+                    email: profile.email,
+                    photoURL: profile.picture
+                });
+                toast.success("Login successful");
+                navigate(from, { replace: true });
+            } catch (err) {
+                toast.error(err.response?.data?.message || err.message || 'Google login failed');
+            } finally {
+                setLoading(false);
+            }
+        },
+        onError: () => {
+            toast.error('Google Sign In failed');
         }
-    };
+    });
 
     return (
         <div className="min-h-[calc(100vh-64px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-dark-bg relative overflow-hidden transition-colors duration-300">

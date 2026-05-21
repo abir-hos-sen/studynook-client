@@ -7,11 +7,6 @@ const MyBookings = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        document.title = "StudyNook - My Bookings";
-        fetchBookings();
-    }, []);
-
     const fetchBookings = async () => {
         try {
             const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/bookings/my-bookings`);
@@ -23,6 +18,12 @@ const MyBookings = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        document.title = "StudyNook - My Bookings";
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchBookings();
+    }, []);
 
     const handleCancel = async (id) => {
         if (window.confirm("Are you sure you want to cancel this booking?")) {

@@ -1,6 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useState, useEffect } from 'react';
-import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
-import auth from '../firebase/firebase.config';
 import axios from 'axios';
 
 export const AuthContext = createContext(null);
@@ -19,7 +18,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`);
             setUser(data);
-        } catch (error) {
+        } catch {
             setUser(null);
         } finally {
             setLoading(false);
@@ -27,20 +26,17 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchUser();
     }, []);
 
-    const loginWithGoogle = async () => {
+    const loginWithGoogle = async (googleUserData) => {
         setLoading(true);
-        const provider = new GoogleAuthProvider();
         try {
-            const result = await signInWithPopup(auth, provider);
-            // Send to our backend to get JWT cookie
-            const { user: firebaseUser } = result;
             const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
-                name: firebaseUser.displayName,
-                email: firebaseUser.email,
-                photoURL: firebaseUser.photoURL
+                name: googleUserData.name,
+                email: googleUserData.email,
+                photoURL: googleUserData.photoURL
             });
             setUser(res.data.user);
             return res.data;
@@ -53,8 +49,6 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         setLoading(true);
         try {
-            // Logout from firebase
-            await signOut(auth);
             // Logout from backend (clear cookie)
             await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/logout`);
             setUser(null);

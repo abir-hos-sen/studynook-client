@@ -26,7 +26,7 @@ const RoomDetails = () => {
                 const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/rooms/${id}`);
                 setRoom(data);
                 document.title = `StudyNook - ${data.name}`;
-            } catch (error) {
+            } catch {
                 toast.error('Failed to load room details');
                 navigate('/rooms');
             } finally {
