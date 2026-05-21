@@ -58,7 +58,8 @@ const Register = () => {
             try {
                 setLoading(true);
                 const res = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
-                    headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+                    headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+                    withCredentials: false
                 });
                 const profile = res.data;
                 await loginWithGoogle({
