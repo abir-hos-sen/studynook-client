@@ -1,17 +1,48 @@
-import { useContext, useRef } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FiArrowLeft, FiCamera, FiSettings, FiMail, FiPhone, FiCalendar, FiCheckCircle } from 'react-icons/fi';
-import { motion } from 'framer-motion';
+import { FiArrowLeft, FiCamera, FiSettings, FiMail, FiPhone, FiCalendar, FiCheckCircle, FiX } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Profile = () => {
-    const { user } = useContext(AuthContext);
+    const { user, updateAuthUser } = useContext(AuthContext);
     const navigate = useNavigate();
-    const fileInputRef = useRef(null);
+    const [isUpdatingPhoto, setIsUpdatingPhoto] = useState(false);
+    const [newPhotoURL, setNewPhotoURL] = useState('');
+    const [loading, setLoading] = useState(false);
 
     if (!user) return null;
 
     const avatarFallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=1a3a6b&color=fff&size=128&bold=true`;
+
+    const handlePhotoUpdate = async (e) => {
+        e.preventDefault();
+        if (!newPhotoURL.trim()) {
+            setIsUpdatingPhoto(false);
+            return;
+        }
+        
+        setLoading(true);
+        try {
+            const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/api/auth/update-profile`, {
+                name: user.name, // Keep existing name
+                email: user.email,
+                phone: user.phone,
+                birthday: user.birthday,
+                photoURL: newPhotoURL.trim()
+            });
+            updateAuthUser(data.user);
+            toast.success('Profile picture updated successfully!');
+            setIsUpdatingPhoto(false);
+            setNewPhotoURL('');
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to update photo');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 pt-20 pb-16">
@@ -62,13 +93,53 @@ const Profile = () => {
                                     />
                                 </div>
                                 <button
-                                    onClick={() => navigate('/profile/settings')}
+                                    onClick={() => setIsUpdatingPhoto(true)}
                                     className="absolute -bottom-1 -right-1 w-7 h-7 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+                                    title="Change Profile Picture via URL"
                                 >
                                     <FiCamera size={12} />
                                 </button>
                             </div>
                         </div>
+
+                        {/* Photo URL Update Modal */}
+                        <AnimatePresence>
+                            {isUpdatingPhoto && (
+                                <motion.div 
+                                    initial={{ opacity: 0, height: 0 }} 
+                                    animate={{ opacity: 1, height: 'auto' }} 
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="mb-8 overflow-hidden"
+                                >
+                                    <div className="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-700/50 relative">
+                                        <button 
+                                            onClick={() => setIsUpdatingPhoto(false)}
+                                            className="absolute top-3 right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                        >
+                                            <FiX size={16} />
+                                        </button>
+                                        <h3 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Update Profile Picture</h3>
+                                        <form onSubmit={handlePhotoUpdate} className="flex gap-2">
+                                            <input
+                                                type="url"
+                                                placeholder="Enter image URL..."
+                                                className="flex-1 px-4 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                                                value={newPhotoURL}
+                                                onChange={(e) => setNewPhotoURL(e.target.value)}
+                                                autoFocus
+                                            />
+                                            <button 
+                                                type="submit" 
+                                                disabled={loading}
+                                                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition-colors disabled:opacity-70"
+                                            >
+                                                {loading ? 'Saving...' : 'Save'}
+                                            </button>
+                                        </form>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
                         {/* Name & Email */}
                         <div className="mb-7">
@@ -120,8 +191,6 @@ const Profile = () => {
                     </div>
                 </motion.div>
 
-                {/* Hidden file input ref (unused but kept for future) */}
-                <input ref={fileInputRef} type="file" className="hidden" accept="image/*" />
             </div>
         </div>
     );

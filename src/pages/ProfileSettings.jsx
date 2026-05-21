@@ -15,7 +15,6 @@ const ProfileSettings = () => {
     const [email, setEmail] = useState('');
     const [birthday, setBirthday] = useState('');
     const [phone, setPhone] = useState('');
-    const [photoURL, setPhotoURL] = useState('');
 
     useEffect(() => {
         document.title = 'StudyNook - Account Settings';
@@ -24,7 +23,6 @@ const ProfileSettings = () => {
             setEmail(user.email || '');
             setBirthday(user.birthday || '');
             setPhone(user.phone || '');
-            setPhotoURL(user.photoURL || '');
         }
     }, [user]);
 
@@ -40,7 +38,7 @@ const ProfileSettings = () => {
                 email: email.trim(),
                 birthday,
                 phone: phone.trim(),
-                photoURL: photoURL.trim()
+                photoURL: user.photoURL
             });
             updateAuthUser(data.user);
             toast.success('Settings saved successfully!');
@@ -91,36 +89,7 @@ const ProfileSettings = () => {
                                 </div>
                             </div>
 
-                            {/* Photo URL Section */}
-                            <div className="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-5 border border-slate-100 dark:border-slate-700/40">
-                                <div className="flex items-center gap-4">
-                                    <div className="relative shrink-0">
-                                        <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 shadow-md bg-slate-200">
-                                            <img
-                                                src={photoURL || avatarFallback}
-                                                alt={user.name}
-                                                className="w-full h-full object-cover"
-                                                onError={(e) => { e.target.src = avatarFallback; }}
-                                            />
-                                        </div>
-                                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center">
-                                            <FiCamera size={11} />
-                                        </div>
-                                    </div>
-                                    <div className="flex-1">
-                                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">
-                                            Profile Photo URL
-                                        </label>
-                                        <input
-                                            type="url"
-                                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
-                                            placeholder="https://example.com/photo.jpg"
-                                            value={photoURL}
-                                            onChange={(e) => setPhotoURL(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+
 
                             {/* Form Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
