@@ -10,7 +10,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { loginWithGoogle, updateAuthUser, setLoading } = useContext(AuthContext);
+    const { loginWithGoogle, updateAuthUser, setLoading, setAuthToken } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -27,6 +27,9 @@ const Login = () => {
         try {
             setLoading(true);
             const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
+            if (data.token) {
+                setAuthToken(data.token);
+            }
             updateAuthUser(data.user);
             toast.success(data.message);
             navigate(from, { replace: true });

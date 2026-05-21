@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FiMenu, FiX, FiMoon, FiSun, FiLogOut, FiBookOpen } from 'react-icons/fi';
+import { FiMenu, FiX, FiMoon, FiSun, FiLogOut, FiBookOpen, FiUser } from 'react-icons/fi';
 
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
@@ -109,6 +109,12 @@ const Navbar = () => {
                                         <p className="text-xs font-semibold text-slate-400">LOGGED IN AS</p>
                                         <p className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">{user.name}</p>
                                     </div>
+                                    <Link 
+                                        to="/profile" 
+                                        className="w-full text-left px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-center gap-2 font-medium"
+                                    >
+                                        <FiUser size={16} /> My Profile
+                                    </Link>
                                     <button 
                                         onClick={handleLogout} 
                                         className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors flex items-center gap-2 font-medium"
@@ -204,7 +210,14 @@ const Navbar = () => {
                                         <div className="text-sm font-semibold text-slate-500">{user.email}</div>
                                     </div>
                                 </div>
-                                <div className="mt-3">
+                                <div className="mt-3 space-y-2">
+                                    <Link 
+                                        to="/profile"
+                                        onClick={() => setIsOpen(false)}
+                                        className="w-full text-center py-2.5 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <FiUser size={16} /> My Profile
+                                    </Link>
                                     <button 
                                         onClick={() => { handleLogout(); setIsOpen(false); }} 
                                         className="w-full text-center py-2.5 text-red-500 bg-red-50 dark:bg-red-950/20 hover:bg-red-100 dark:hover:bg-red-950/40 rounded-xl font-bold transition-all flex items-center justify-center gap-2"

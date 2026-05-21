@@ -11,6 +11,7 @@ import UpdateRoom from "../pages/UpdateRoom";
 import MyBookings from "../pages/MyBookings";
 import NotFound from "../pages/NotFound";
 import PrivateRoute from "./PrivateRoute";
+import Profile from "../pages/Profile";
 
 const router = createBrowserRouter([
     {
@@ -28,7 +29,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "/rooms/:id",
-                element: <RoomDetails />,
+                element: (
+                    <PrivateRoute>
+                        <RoomDetails />
+                    </PrivateRoute>
+                ),
             },
             {
                 path: "/login",
@@ -67,6 +72,14 @@ const router = createBrowserRouter([
                 element: (
                     <PrivateRoute>
                         <MyBookings />
+                    </PrivateRoute>
+                ),
+            },
+            {
+                path: "/profile",
+                element: (
+                    <PrivateRoute>
+                        <Profile />
                     </PrivateRoute>
                 ),
             }

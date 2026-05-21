@@ -8,18 +8,38 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const setAuthToken = (token) => {
+        if (token) {
+            localStorage.setItem('token', token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        } else {
+            localStorage.removeItem('token');
+            delete axios.defaults.headers.common['Authorization'];
+        }
+    };
+
     // Setup Axios Interceptor for credentials
     useEffect(() => {
         axios.defaults.withCredentials = true;
+        const token = localStorage.getItem('token');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
     }, []);
 
     // Fetch user from our backend to verify JWT cookie
     const fetchUser = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
         try {
             const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`);
             setUser(data);
         } catch {
             setUser(null);
+            localStorage.removeItem('token');
+            delete axios.defaults.headers.common['Authorization'];
         } finally {
             setLoading(false);
         }
@@ -38,7 +58,11 @@ export const AuthProvider = ({ children }) => {
                 email: googleUserData.email,
                 photoURL: googleUserData.photoURL
             });
-            setUser(res.data.user);
+            const { user, token } = res.data;
+            if (token) {
+                setAuthToken(token);
+            }
+            setUser(user);
             return res.data;
         } catch (error) {
             setLoading(false);
@@ -51,10 +75,11 @@ export const AuthProvider = ({ children }) => {
         try {
             // Logout from backend (clear cookie)
             await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/logout`);
-            setUser(null);
         } catch (error) {
             console.error('Logout error', error);
         } finally {
+            setAuthToken(null);
+            setUser(null);
             setLoading(false);
         }
     };
@@ -70,7 +95,8 @@ export const AuthProvider = ({ children }) => {
         loginWithGoogle,
         logout,
         updateAuthUser,
-        fetchUser
+        fetchUser,
+        setAuthToken
     };
 
     return (
