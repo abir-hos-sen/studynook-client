@@ -12,6 +12,7 @@ import MyBookings from "../pages/MyBookings";
 import NotFound from "../pages/NotFound";
 import PrivateRoute from "./PrivateRoute";
 import Profile from "../pages/Profile";
+import ProfileSettings from "../pages/ProfileSettings";
 
 const router = createBrowserRouter([
     {
@@ -80,6 +81,14 @@ const router = createBrowserRouter([
                 element: (
                     <PrivateRoute>
                         <Profile />
+                    </PrivateRoute>
+                ),
+            },
+            {
+                path: "/profile/settings",
+                element: (
+                    <PrivateRoute>
+                        <ProfileSettings />
                     </PrivateRoute>
                 ),
             }

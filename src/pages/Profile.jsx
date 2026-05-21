@@ -1,387 +1,127 @@
-import { useState, useContext, useEffect } from 'react';
+import { useContext, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    FiUser, FiMail, FiPhone, FiCalendar, FiCamera, FiSave, 
-    FiSettings, FiEdit3, FiCheck, FiX, FiShield
-} from 'react-icons/fi';
+import { FiArrowLeft, FiCamera, FiSettings, FiMail, FiPhone, FiCalendar, FiCheckCircle } from 'react-icons/fi';
+import { motion } from 'framer-motion';
 
 const Profile = () => {
-    const { user, updateAuthUser } = useContext(AuthContext);
-    const [activeTab, setActiveTab] = useState('profile');
-    const [loading, setLoading] = useState(false);
-
-    // Photo state
-    const [photoURL, setPhotoURL] = useState('');
-    const [photoInput, setPhotoInput] = useState('');
-    const [editingPhoto, setEditingPhoto] = useState(false);
-
-    // Profile info state
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-
-    // Settings state
-    const [phone, setPhone] = useState('');
-    const [birthday, setBirthday] = useState('');
-
-    useEffect(() => {
-        document.title = "StudyNook - My Profile";
-        if (user) {
-            setName(user.name || '');
-            setEmail(user.email || '');
-            setPhotoURL(user.photoURL || '');
-            setPhotoInput(user.photoURL || '');
-            setPhone(user.phone || '');
-            setBirthday(user.birthday || '');
-        }
-    }, [user]);
-
-    const handlePhotoSave = async () => {
-        if (!photoInput.trim()) return toast.error("Please enter a valid image URL");
-        setLoading(true);
-        try {
-            const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/api/auth/update-profile`, {
-                name: user.name,
-                email: user.email,
-                phone: user.phone,
-                birthday: user.birthday,
-                photoURL: photoInput.trim()
-            });
-            updateAuthUser(data.user);
-            setPhotoURL(photoInput.trim());
-            setEditingPhoto(false);
-            toast.success("Profile photo updated!");
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to update photo");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleProfileSave = async (e) => {
-        e.preventDefault();
-        if (!name.trim()) return toast.error("Name cannot be empty");
-        setLoading(true);
-        try {
-            const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/api/auth/update-profile`, {
-                name: name.trim(),
-                email: email.trim(),
-                photoURL: user.photoURL,
-                phone: user.phone,
-                birthday: user.birthday
-            });
-            updateAuthUser(data.user);
-            toast.success("Profile info updated!");
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to update profile");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleSettingsSave = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/api/auth/update-profile`, {
-                name: user.name,
-                email: user.email,
-                photoURL: user.photoURL,
-                phone: phone.trim(),
-                birthday: birthday
-            });
-            updateAuthUser(data.user);
-            toast.success("Settings saved!");
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to save settings");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const fileInputRef = useRef(null);
 
     if (!user) return null;
 
-    const tabs = [
-        { id: 'profile', label: 'Profile Info', icon: FiUser },
-        { id: 'settings', label: 'Settings', icon: FiSettings },
-    ];
+    const avatarFallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=1a3a6b&color=fff&size=128&bold=true`;
 
     return (
-        <div className="relative min-h-screen pt-24 pb-16 overflow-hidden">
-            <div className="bg-mesh-glow"></div>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 pt-20 pb-16">
+            <div className="max-w-2xl mx-auto px-4">
 
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                
-                {/* Header */}
-                <motion.div 
-                    initial={{ opacity: 0, y: -20 }} 
-                    animate={{ opacity: 1, y: 0 }} 
-                    className="text-center mb-10"
+                {/* Back to Home */}
+                <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="mb-6"
                 >
-                    <span className="badge-premium inline-block mb-3">Account</span>
-                    <h1 className="text-4xl font-extrabold tracking-tight">My Profile</h1>
-                    <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">Manage your personal information</p>
+                    <Link
+                        to="/"
+                        className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium transition-colors"
+                    >
+                        <FiArrowLeft size={15} /> Back to Home
+                    </Link>
                 </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    
-                    {/* Left - Avatar Card */}
-                    <motion.div 
-                        initial={{ opacity: 0, x: -20 }} 
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="lg:col-span-1"
-                    >
-                        <div className="glass-card p-6 border border-white/20 dark:border-slate-800/40 shadow-xl text-center space-y-5">
-                            
-                            {/* Avatar */}
-                            <div className="relative inline-block mx-auto">
-                                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary-500/40 shadow-2xl mx-auto">
-                                    <img 
-                                        src={photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=7c3aed&color=fff&size=128`} 
+                {/* Profile Card */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 }}
+                    className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl overflow-hidden border border-slate-100 dark:border-slate-800/60"
+                >
+                    {/* Banner */}
+                    <div className="h-36 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700 relative">
+                        {/* Edit Settings Button */}
+                        <button
+                            onClick={() => navigate('/profile/settings')}
+                            className="absolute top-4 right-4 flex items-center gap-2 bg-white/90 hover:bg-white dark:bg-slate-900/80 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-200 text-xs font-bold px-4 py-2 rounded-full shadow-md transition-all hover:scale-105 border border-white/20"
+                        >
+                            <FiSettings size={13} /> Edit Settings
+                        </button>
+                    </div>
+
+                    {/* Avatar Area */}
+                    <div className="px-8 pb-8">
+                        <div className="flex items-end gap-4 -mt-12 mb-6">
+                            <div className="relative">
+                                <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white dark:border-slate-900 shadow-xl bg-slate-200">
+                                    <img
+                                        src={user.photoURL || avatarFallback}
                                         alt={user.name}
                                         className="w-full h-full object-cover"
-                                        onError={(e) => { 
-                                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=7c3aed&color=fff&size=128`; 
-                                        }}
+                                        onError={(e) => { e.target.src = avatarFallback; }}
                                     />
                                 </div>
-                                <button 
-                                    onClick={() => setEditingPhoto(!editingPhoto)}
-                                    className="absolute bottom-0 right-0 w-9 h-9 bg-primary-600 hover:bg-primary-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+                                <button
+                                    onClick={() => navigate('/profile/settings')}
+                                    className="absolute -bottom-1 -right-1 w-7 h-7 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
                                 >
-                                    <FiCamera size={16} />
+                                    <FiCamera size={12} />
                                 </button>
                             </div>
+                        </div>
 
-                            {/* Name & role */}
-                            <div>
-                                <h2 className="text-xl font-extrabold text-slate-800 dark:text-slate-100">{user.name}</h2>
-                                <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{user.email}</p>
-                                <span className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full text-xs font-bold bg-primary-500/10 text-primary-600 dark:text-primary-400 border border-primary-500/20 capitalize">
-                                    <FiShield size={11} /> {user.role || 'user'}
+                        {/* Name & Email */}
+                        <div className="mb-7">
+                            <div className="flex items-center gap-2 mb-1">
+                                <h1 className="text-2xl font-extrabold text-slate-800 dark:text-slate-100">{user.name}</h1>
+                                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/40">
+                                    <FiCheckCircle size={13} className="text-blue-600 dark:text-blue-400" />
                                 </span>
                             </div>
-
-                            {/* Photo URL editor */}
-                            <AnimatePresence>
-                                {editingPhoto && (
-                                    <motion.div
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        exit={{ opacity: 0, height: 0 }}
-                                        className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800/60"
-                                    >
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest text-left">Photo URL</p>
-                                        <input
-                                            type="url"
-                                            className="input-premium text-sm"
-                                            placeholder="Paste image URL here..."
-                                            value={photoInput}
-                                            onChange={(e) => setPhotoInput(e.target.value)}
-                                        />
-                                        {photoInput && (
-                                            <div className="w-16 h-16 rounded-xl overflow-hidden mx-auto border-2 border-primary-500/30">
-                                                <img 
-                                                    src={photoInput} 
-                                                    alt="preview" 
-                                                    className="w-full h-full object-cover"
-                                                    onError={(e) => { e.target.style.display = 'none'; }}
-                                                />
-                                            </div>
-                                        )}
-                                        <div className="flex gap-2">
-                                            <button 
-                                                onClick={handlePhotoSave}
-                                                disabled={loading}
-                                                className="flex-1 btn-premium-primary py-2 text-sm flex items-center justify-center gap-1"
-                                            >
-                                                <FiCheck size={14}/> {loading ? 'Saving...' : 'Save Photo'}
-                                            </button>
-                                            <button 
-                                                onClick={() => { setEditingPhoto(false); setPhotoInput(photoURL); }}
-                                                className="btn-premium-secondary py-2 px-3 text-sm"
-                                            >
-                                                <FiX size={14}/>
-                                            </button>
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                            {/* Extra info */}
-                            <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-800/60 text-left">
-                                {user.phone && (
-                                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                                        <FiPhone size={13} className="text-primary-500 shrink-0"/>
-                                        <span>{user.phone}</span>
-                                    </div>
-                                )}
-                                {user.birthday && (
-                                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                                        <FiCalendar size={13} className="text-primary-500 shrink-0"/>
-                                        <span>{user.birthday}</span>
-                                    </div>
-                                )}
+                            <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+                                <FiMail size={13} />
+                                <span>{user.email}</span>
                             </div>
                         </div>
-                    </motion.div>
 
-                    {/* Right - Tabs */}
-                    <motion.div 
-                        initial={{ opacity: 0, x: 20 }} 
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.15 }}
-                        className="lg:col-span-2"
-                    >
-                        <div className="glass-card border border-white/20 dark:border-slate-800/40 shadow-xl overflow-hidden">
-                            
-                            {/* Tab Header */}
-                            <div className="flex border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-950/20">
-                                {tabs.map((tab) => (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setActiveTab(tab.id)}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-4 text-sm font-bold transition-all duration-200 ${
-                                            activeTab === tab.id 
-                                                ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500 bg-white/60 dark:bg-slate-900/40' 
-                                                : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-200'
-                                        }`}
-                                    >
-                                        <tab.icon size={15}/>
-                                        {tab.label}
-                                    </button>
-                                ))}
+                        {/* Info Cards */}
+                        <div className="grid grid-cols-3 gap-4">
+                            {/* Status */}
+                            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-100 dark:border-slate-700/40">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Status</p>
+                                <div className="flex items-center gap-1.5">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">Verified User</span>
+                                </div>
                             </div>
 
-                            {/* Tab Content */}
-                            <div className="p-8">
-                                <AnimatePresence mode="wait">
+                            {/* Date of Birth */}
+                            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-100 dark:border-slate-700/40">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Date of Birth</p>
+                                <div className="flex items-center gap-1.5">
+                                    <FiCalendar size={13} className="text-slate-400 shrink-0" />
+                                    <span className={`text-sm font-bold ${user.birthday ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'}`}>
+                                        {user.birthday || 'Not specified'}
+                                    </span>
+                                </div>
+                            </div>
 
-                                    {/* Profile Info Tab */}
-                                    {activeTab === 'profile' && (
-                                        <motion.form
-                                            key="profile"
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
-                                            onSubmit={handleProfileSave}
-                                            className="space-y-6"
-                                        >
-                                            <div>
-                                                <h3 className="text-lg font-extrabold text-slate-800 dark:text-slate-100 mb-1">Profile Information</h3>
-                                                <p className="text-sm text-slate-400">Update your name and email address</p>
-                                            </div>
-
-                                            <div className="space-y-5">
-                                                {/* Name */}
-                                                <div className="space-y-2">
-                                                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                        <FiUser size={12}/> Full Name
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        className="input-premium"
-                                                        placeholder="Your full name"
-                                                        value={name}
-                                                        onChange={(e) => setName(e.target.value)}
-                                                        required
-                                                    />
-                                                </div>
-
-                                                {/* Email */}
-                                                <div className="space-y-2">
-                                                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                        <FiMail size={12}/> Email Address
-                                                    </label>
-                                                    <input
-                                                        type="email"
-                                                        className="input-premium"
-                                                        placeholder="your@email.com"
-                                                        value={email}
-                                                        onChange={(e) => setEmail(e.target.value)}
-                                                        required
-                                                    />
-                                                    <p className="text-xs text-slate-400 flex items-center gap-1">
-                                                        <FiShield size={11}/> Changing email will update your login credentials
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <button 
-                                                type="submit" 
-                                                disabled={loading}
-                                                className="btn-premium-primary py-3 flex items-center justify-center gap-2 w-full"
-                                            >
-                                                <FiSave size={16}/> 
-                                                {loading ? 'Saving...' : 'Save Profile'}
-                                            </button>
-                                        </motion.form>
-                                    )}
-
-                                    {/* Settings Tab */}
-                                    {activeTab === 'settings' && (
-                                        <motion.form
-                                            key="settings"
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
-                                            onSubmit={handleSettingsSave}
-                                            className="space-y-6"
-                                        >
-                                            <div>
-                                                <h3 className="text-lg font-extrabold text-slate-800 dark:text-slate-100 mb-1">Personal Settings</h3>
-                                                <p className="text-sm text-slate-400">Add your phone number and birthday</p>
-                                            </div>
-
-                                            <div className="space-y-5">
-                                                {/* Phone */}
-                                                <div className="space-y-2">
-                                                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                        <FiPhone size={12}/> Phone Number
-                                                    </label>
-                                                    <input
-                                                        type="tel"
-                                                        className="input-premium"
-                                                        placeholder="+880 1700-000000"
-                                                        value={phone}
-                                                        onChange={(e) => setPhone(e.target.value)}
-                                                    />
-                                                </div>
-
-                                                {/* Birthday */}
-                                                <div className="space-y-2">
-                                                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                        <FiCalendar size={12}/> Birthday
-                                                    </label>
-                                                    <input
-                                                        type="date"
-                                                        className="input-premium"
-                                                        value={birthday}
-                                                        onChange={(e) => setBirthday(e.target.value)}
-                                                        max={new Date().toISOString().split('T')[0]}
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <button 
-                                                type="submit" 
-                                                disabled={loading}
-                                                className="btn-premium-primary py-3 flex items-center justify-center gap-2 w-full"
-                                            >
-                                                <FiSave size={16}/>
-                                                {loading ? 'Saving...' : 'Save Settings'}
-                                            </button>
-                                        </motion.form>
-                                    )}
-
-                                </AnimatePresence>
+                            {/* Phone */}
+                            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-100 dark:border-slate-700/40">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Phone Number</p>
+                                <div className="flex items-center gap-1.5">
+                                    <FiPhone size={13} className="text-slate-400 shrink-0" />
+                                    <span className={`text-sm font-bold ${user.phone ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'}`}>
+                                        {user.phone || 'Not specified'}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </motion.div>
-                </div>
+                    </div>
+                </motion.div>
+
+                {/* Hidden file input ref (unused but kept for future) */}
+                <input ref={fileInputRef} type="file" className="hidden" accept="image/*" />
             </div>
         </div>
     );

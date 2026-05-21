@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { FiSearch, FiSliders, FiUsers, FiMapPin } from 'react-icons/fi';
+import { AuthContext } from '../context/AuthContext';
 
 const Rooms = () => {
     const [rooms, setRooms] = useState([]);
@@ -11,6 +12,16 @@ const Rooms = () => {
     const [minRate, setMinRate] = useState('');
     const [maxRate, setMaxRate] = useState('');
     const [selectedAmenities, setSelectedAmenities] = useState([]);
+    const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
+
+    const handleViewDetails = (roomId) => {
+        if (!user) {
+            navigate('/login', { state: { from: { pathname: `/rooms/${roomId}` } } });
+        } else {
+            navigate(`/rooms/${roomId}`);
+        }
+    };
 
     const amenitiesList = ['Whiteboard', 'Projector', 'Wi-Fi', 'Power Outlets', 'Quiet Zone', 'Air Conditioning'];
 
@@ -206,9 +217,12 @@ const Rooms = () => {
                                             </div>
 
                                             <div className="mt-auto pt-2">
-                                                <Link to={`/rooms/${room._id}`} className="btn-premium-primary py-2.5 text-sm w-full">
+                                                <button 
+                                                    onClick={() => handleViewDetails(room._id)}
+                                                    className="btn-premium-primary py-2.5 text-sm w-full"
+                                                >
                                                     View Nook Details
-                                                </Link>
+                                                </button>
                                             </div>
                                         </div>
                                     </motion.div>
