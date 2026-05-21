@@ -37,7 +37,12 @@ const Rooms = () => {
             }
 
             const { data } = await axios.get(url);
-            setRooms(data);
+            if (Array.isArray(data)) {
+                setRooms(data);
+            } else {
+                console.error("API error: Did not receive an array", data);
+                setRooms([]);
+            }
         } catch (error) {
             console.error('Error fetching rooms', error);
         } finally {

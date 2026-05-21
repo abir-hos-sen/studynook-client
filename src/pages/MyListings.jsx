@@ -15,8 +15,13 @@ const MyListings = () => {
             // Fetch all rooms and filter by user ID since we don't have a specific endpoint for user's rooms
             // Alternatively, in a real app we'd have a `/api/rooms/user/:id` endpoint
             const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/rooms`);
-            const myRooms = data.filter(room => room.owner === user._id || (room.owner && room.owner._id === user._id));
-            setRooms(myRooms);
+            if (Array.isArray(data)) {
+                const myRooms = data.filter(room => room.owner === user._id || (room.owner && room.owner._id === user._id));
+                setRooms(myRooms);
+            } else {
+                console.error("API error: Did not receive an array", data);
+                setRooms([]);
+            }
         } catch (error) {
             console.error('Error fetching rooms', error);
             toast.error('Failed to load your listings');

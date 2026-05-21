@@ -24,7 +24,12 @@ const Home = () => {
         const fetchLatestRooms = async () => {
             try {
                 const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/rooms/latest`);
-                setRooms(data);
+                if (Array.isArray(data)) {
+                    setRooms(data);
+                } else {
+                    console.error("API error: Did not receive an array", data);
+                    setRooms([]);
+                }
             } catch (error) {
                 console.error('Error fetching rooms', error);
             } finally {
