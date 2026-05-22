@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    // Fetch user from our backend to verify JWT cookie
+    // Fetch user from our backend to verify JWT token
     const fetchUser = async () => {
         // If no API URL configured, skip fetch and set user to null
         if (!import.meta.env.VITE_API_URL) {
@@ -36,9 +36,13 @@ export const AuthProvider = ({ children }) => {
             return;
         }
         const token = localStorage.getItem('token');
-        if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        // No token means user is not logged in - skip API call entirely
+        if (!token) {
+            setUser(null);
+            setLoading(false);
+            return;
         }
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         try {
             const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`);
             // Strictly validate the response - must have _id and email
