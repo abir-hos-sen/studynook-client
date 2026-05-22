@@ -18,13 +18,18 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Setup Axios Interceptor for credentials
+    // Setup Axios Interceptor — runs before EVERY request, reads token fresh from localStorage
     useEffect(() => {
         axios.defaults.withCredentials = true;
-        const token = localStorage.getItem('token');
-        if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        }
+        const interceptor = axios.interceptors.request.use((config) => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                config.headers['Authorization'] = `Bearer ${token}`;
+            }
+            return config;
+        });
+        // Cleanup interceptor on unmount
+        return () => axios.interceptors.request.eject(interceptor);
     }, []);
 
     // Fetch user from our backend to verify JWT token
@@ -54,9 +59,9 @@ export const AuthProvider = ({ children }) => {
                 delete axios.defaults.headers.common['Authorization'];
             }
         } catch {
+            // Token invalid/expired — clear it and set user to null
             setUser(null);
             localStorage.removeItem('token');
-            delete axios.defaults.headers.common['Authorization'];
         } finally {
             setLoading(false);
         }
@@ -74,7 +79,7 @@ export const AuthProvider = ({ children }) => {
                 name: googleUserData.name,
                 email: googleUserData.email,
                 photoURL: googleUserData.photoURL
-            });
+            }, { withCredentials: true });
             const { user, token } = res.data;
             if (token) {
                 setAuthToken(token);
