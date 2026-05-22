@@ -26,7 +26,7 @@ const Login = () => {
         
         try {
             setLoading(true);
-            const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
+            const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password }, { withCredentials: true });
             if (data.token) {
                 setAuthToken(data.token);
             }
