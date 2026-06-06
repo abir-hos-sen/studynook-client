@@ -26,3 +26,4 @@ StudyNook is a full‑stack web application where students and library users can
 - Firebase Auth
 - Framer Motion
 - React Hot Toast
+live link : https://studynook-client-chi.vercel.app
